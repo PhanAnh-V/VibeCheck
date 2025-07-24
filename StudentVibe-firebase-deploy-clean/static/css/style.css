@@ -1,0 +1,679 @@
+/* Google Forms-inspired Student Information Form Styles */
+
+/* Root Variables */
+:root {
+    --primary-blue: #2196F3;
+    --secondary-green: #4CAF50;
+    --background-grey: #FAFAFA;
+    --text-dark: #212121;
+    --accent-orange: #FF5722;
+    --white: #FFFFFF;
+    --light-grey: #F5F5F5;
+    --border-grey: #E0E0E0;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --shadow-hover: rgba(0, 0, 0, 0.15);
+}
+
+/* Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--background-grey);
+    color: var(--text-dark);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form Header */
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+}
+
+.form-title {
+    color: var(--primary-blue);
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.form-description {
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    margin: 0 auto;
+    max-width: 600px;
+    opacity: 0.8;
+}
+
+/* Form Card */
+.form-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px var(--shadow);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-grey);
+    transition: box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+    box-shadow: 0 4px 20px var(--shadow-hover);
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    display: inline-block;
+}
+
+.required-asterisk {
+    color: var(--accent-orange);
+    margin-left: 2px;
+    font-weight: bold;
+}
+
+/* Form Controls */
+.form-control {
+    border: 2px solid var(--border-grey);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: var(--white);
+}
+
+.form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    outline: none;
+    background-color: var(--white);
+}
+
+.form-control:hover {
+    border-color: var(--primary-blue);
+}
+
+/* Question Title and Description */
+.question-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.question-description {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    word-wrap: break-word;
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+/* Form Errors */
+.form-error {
+    margin-top: 0.5rem;
+}
+
+.form-error small {
+    display: block;
+    color: var(--accent-orange);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Submit Button */
+.submit-group {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+    font-weight: 500;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    background-color: #1976D2;
+    border-color: #1976D2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Flash Messages */
+.flash-messages {
+    margin-bottom: 1.5rem;
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.alert-danger {
+    background-color: rgba(255, 87, 34, 0.1);
+    color: var(--accent-orange);
+    border-left: 4px solid var(--accent-orange);
+}
+
+.alert-info {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: var(--primary-blue);
+    border-left: 4px solid var(--primary-blue);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 10px;
+    }
+    
+    .form-card {
+        padding: 1.5rem;
+        margin: 0 0 1rem 0;
+    }
+    
+    .form-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-description {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px 0;
+    }
+    
+    .form-container {
+        padding: 5px;
+    }
+    
+    .form-card {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .form-title {
+        font-size: 1.75rem;
+    }
+}
+
+/* Modern Squad Cards */
+.squad-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.squad-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.squad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f1f3f4;
+}
+
+.squad-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.squad-title i {
+    color: #3498db;
+    margin-right: 0.5rem;
+}
+
+.squad-interests {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.squad-member-count .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+}
+
+.squad-members-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modern-member-card {
+    background: #ffffff;
+    border: 2px solid #f1f3f4;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.modern-member-card:hover {
+    border-color: #3498db;
+    transform: translateX(4px);
+}
+
+.member-avatar {
+    margin-right: 1rem;
+}
+
+.member-avatar i {
+    font-size: 2.5rem;
+    color: #3498db;
+}
+
+.member-details {
+    flex: 1;
+}
+
+.member-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+}
+
+.member-info-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.info-tag {
+    background: #ecf0f1;
+    color: #34495e;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.country-tag {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+}
+
+.gender-tag {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
+.squad-footer {
+    padding-top: 1rem;
+    border-top: 1px solid #ecf0f1;
+    text-align: center;
+}
+
+.squads-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .squads-grid {
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    }
+}
+
+/* Solo Students Grid */
+.solo-students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ungrouped-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.section-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.section-title {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.section-description {
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* Enhanced Public Squads Page Styling */
+.squad-showcase-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+}
+
+.squad-showcase-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.squad-theme {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.squad-meta {
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.vibe-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.vibe-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.vibe-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.vibe-card-header {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.member-avatar i {
+    font-size: 3rem;
+    opacity: 0.9;
+}
+
+.member-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.vibe-archetype {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+}
+
+.member-details {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.member-tag {
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.member-tag.country-tag {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+}
+
+.member-tag.id-tag {
+    background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+    box-shadow: 0 2px 8px rgba(142, 68, 173, 0.3);
+}
+
+/* Delete Button Styles */
+.delete-student-btn, .delete-squad-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    text-decoration: none;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+    transition: all 0.3s ease;
+    margin-left: 8px;
+}
+
+.delete-student-btn:hover, .delete-squad-btn:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.delete-squad-btn {
+    margin-left: 12px;
+}
+
+/* Member Actions Container */
+.member-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+}
+
+/* Update modern member card to accommodate delete button */
+.modern-member-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #e1e8ed;
+}
+
+.modern-member-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.member-info-section {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.squads-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    margin: 2rem 0;
+}
+
+.empty-icon i {
+    font-size: 4rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.empty-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.empty-message {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.squads-footer {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+}
+
+@media (max-width: 768px) {
+    .vibe-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .squad-showcase-header {
+        padding: 1rem;
+    }
+    
+    .squad-showcase-title {
+        font-size: 1.5rem;
+    }
+    
+    .member-details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Fix for questionnaire textarea wrapping */
+.form-group textarea.form-control,
+.question-input,
+textarea.question-input,
+.questionnaire-card .question-input,
+.question-content .question-input {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    text-overflow: clip !important;
+}

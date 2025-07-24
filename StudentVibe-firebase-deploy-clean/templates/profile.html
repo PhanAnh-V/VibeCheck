@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if student %}{{ student.name }} - キャラクタープロフィール{% else %}プロフィールが見つかりません{% endif %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Character Sheet Styles */
+        .character-profile-container {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            min-height: 100vh;
+            padding: 1rem 0;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .character-sheet {
+            background: #1e2a3a;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .character-sheet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #2ecc71, #3498db, #9b59b6);
+        }
+        
+        .character-header {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 1.8rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .character-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 2px;
+        }
+        
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            border: 4px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .character-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .character-archetype {
+            font-size: 1.2rem;
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .character-location {
+            color: #bdc3c7;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .character-stats {
+            background: #2c3e50;
+            padding: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #3498db;
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.2);
+        }
+        
+        .stat-title {
+            color: #3498db;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-value {
+            color: #ecf0f1;
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        .bilingual-answer {
+            margin-top: 1rem;
+        }
+        
+        .original-answer, .japanese-vibe {
+            margin-bottom: 1.5rem;
+        }
+        
+        .answer-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .answer-text {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 3px solid #3498db;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #ecf0f1;
+        }
+        
+        .japanese-text {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        /* Archetype Showcase Styles */
+        .archetype-showcase {
+            margin-bottom: 2rem;
+        }
+        
+        .archetype-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .archetype-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+        }
+        
+        .archetype-icon {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+        
+        .archetype-content {
+            flex: 1;
+        }
+        
+        .archetype-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .archetype-name {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        /* Discovery Compass Styles */
+        .discovery-compass-container {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .compass-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .compass-section:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        .compass-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .compass-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .compass-title {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            font-family: 'Noto Sans JP', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .compass-content {
+            padding: 1.5rem;
+        }
+        
+        .compass-text {
+            color: #ecf0f1;
+            font-size: 1rem;
+            line-height: 1.7;
+            font-family: 'Noto Sans JP', sans-serif;
+            white-space: pre-wrap;
+        }
+        
+        /* Specific section styles for visual distinction */
+        .archetype-section .compass-icon {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .core-compass-section .compass-icon {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+        
+        .uncharted-section .compass-icon {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .first-step-section .compass-icon {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        
+        .japanese-vibe .answer-label {
+            color: #2ecc71;
+        }
+        
+        .japanese-vibe .answer-text {
+            background: rgba(46, 204, 113, 0.1);
+        }
+        
+        .character-abilities {
+            background: #34495e;
+            padding: 2rem;
+        }
+        
+        .abilities-title {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .abilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .ability-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .ability-card:hover {
+            transform: translateX(5px);
+            border-left-color: #2ecc71;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ability-icon {
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .ability-card:hover .ability-icon {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            transform: scale(1.1);
+        }
+        
+        .ability-name {
+            color: #3498db;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .ability-description {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .character-traits {
+            background: #2c3e50;
+            padding: 2rem;
+        }
+        
+        .traits-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .trait-badge {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .trait-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+        
+        .back-navigation {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .back-navigation:hover {
+            background: rgba(52, 152, 219, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .submission-id-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .character-profile-container {
+                padding: 0;
+                background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            }
+            
+            .container {
+                padding: 0;
+                max-width: 100%;
+            }
+            
+            .character-sheet {
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            .character-header {
+                padding: 2rem 1rem 1.5rem;
+                margin-bottom: 0;
+            }
+            
+            .character-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .character-name {
+                font-size: 1.8rem;
+                line-height: 1.2;
+                margin-bottom: 0.3rem;
+            }
+            
+            .character-archetype {
+                font-size: 1rem;
+                margin-bottom: 0.3rem;
+            }
+            
+            .character-location {
+                font-size: 0.9rem;
+                margin-bottom: 0;
+            }
+            
+            .character-stats {
+                padding: 1rem 0;
+                background: #1e2a3a;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                padding: 0 1rem;
+            }
+            
+            .stat-card {
+                padding: 0.8rem;
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.75rem;
+                margin-bottom: 0.2rem;
+            }
+            
+            .stat-value {
+                font-size: 1rem;
+            }
+            
+            .character-abilities {
+                padding: 1rem 0;
+                background: #2c3e50;
+            }
+            
+            .abilities-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+                padding: 0 1rem;
+            }
+            
+            .ability-card {
+                padding: 1rem;
+                border-radius: 10px;
+            }
+            
+            .ability-title {
+                font-size: 1rem;
+                margin-bottom: 0.4rem;
+            }
+            
+            .ability-description {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+            
+            .signature-section {
+                padding: 1rem;
+                background: #34495e;
+            }
+            
+            .signature-title {
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+                text-align: center;
+            }
+            
+            .signature-cards {
+                display: block;
+                gap: 0;
+            }
+            
+            .signature-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 10px;
+                width: 100%;
+            }
+            
+            .signature-card h4 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+                text-align: center;
+            }
+            
+            .signature-card p {
+                font-size: 0.9rem;
+                line-height: 1.4;
+                text-align: center;
+            }
+            
+            /* Mobile Discovery Compass Styles */
+            .discovery-compass-container {
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .compass-section {
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .compass-header {
+                padding: 1rem;
+                gap: 0.8rem;
+            }
+            
+            .compass-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+                border-radius: 10px;
+            }
+            
+            .compass-title {
+                font-size: 1rem;
+                letter-spacing: 0.3px;
+            }
+            
+            .compass-content {
+                padding: 1rem;
+            }
+            
+            .compass-text {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+            
+            .answers-section {
+                padding: 1rem;
+                background: #2c3e50;
+            }
+            
+            .answers-title {
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+                text-align: center;
+                color: white;
+            }
+            
+            .question-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 10px;
+                background: #34495e;
+            }
+            
+            .question-title {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+                color: #3498db;
+                font-weight: 600;
+            }
+            
+            .answer-text {
+                font-size: 0.85rem;
+                line-height: 1.4;
+                color: #ecf0f1;
+            }
+            
+            .back-navigation {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                margin: 0;
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+                z-index: 1000;
+                border-radius: 20px;
+            }
+            
+            .submission-id-badge {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                margin: 0;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.7rem;
+                z-index: 1000;
+                border-radius: 15px;
+                background: rgba(52, 152, 219, 0.9);
+                color: white;
+                width: auto;
+                text-align: center;
+            }
+            
+            .level-badge {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.7rem;
+                border-radius: 10px;
+            }
+            
+            /* Full-width mobile optimization */
+            .col-lg-10,
+            .col-md-12 {
+                padding: 0;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="character-profile-container">
+        <a href="javascript:history.back()" class="back-navigation">
+            <i class="fas fa-arrow-left me-2"></i>戻る
+        </a>
+        
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                    
+                    {% if not student or error_message %}
+                    <!-- Error Message for Profile Not Found -->
+                    <div class="character-sheet">
+                        <div class="character-header text-center">
+                            <i class="fas fa-exclamation-triangle fa-3x mb-3 text-warning"></i>
+                            <h2 class="text-white">プロフィールが見つかりません</h2>
+                            <p class="text-light">お探しの学生プロフィールは存在しないか、読み込めませんでした。</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    
+                    <!-- Character Sheet Card -->
+                    <div class="character-sheet">
+                        
+                        <!-- Character Header -->
+                        <div class="character-header">
+                            {% if student.submission_id %}
+                            <div class="submission-id-badge">
+                                ID: {{ student.submission_id }}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="character-avatar">
+                                {{ student.name[0].upper() }}
+                            </div>
+                            
+                            <h1 class="character-name">{{ student.name }}</h1>
+                            <div class="character-archetype">{{ student.archetype or "個性豊かな学生" }}</div>
+                            <div class="character-location">
+                                <i class="fas fa-globe"></i>
+                                {{ student.country }}
+                            </div>
+                        </div>
+                        
+                        <!-- Character Stats (Q&A) -->
+                        <div class="character-stats">
+                            <h2 class="abilities-title">
+                                <i class="fas fa-scroll"></i>
+                                キャラクター属性
+                            </h2>
+                            <div class="stats-grid">
+                                {% for qa in student_answers %}
+                                <div class="stat-card">
+                                    <div class="stat-title">
+                                        <i class="fas fa-star"></i>
+                                        {{ qa.question }}
+                                    </div>
+                                    <div class="bilingual-answer">
+                                        <div class="original-answer">
+                                            <h6 class="answer-label">
+                                                <i class="fas fa-comment me-2"></i>オリジナル回答
+                                            </h6>
+                                            <div class="answer-text">{{ qa.answer }}</div>
+                                        </div>
+                                        <div class="japanese-vibe">
+                                            <h6 class="answer-label">
+                                                <i class="fas fa-language me-2"></i>日本語バイブ
+                                            </h6>
+                                            <div class="answer-text japanese-text">
+                                                {% if qa.answer_jp %}
+                                                    {{ qa.answer_jp }}
+                                                {% else %}
+                                                    <em class="text-muted">翻訳が利用できません</em>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- AI-Generated Personality Signature -->
+                        <div class="character-abilities">
+                            <h2 class="abilities-title">
+                                <i class="fas fa-compass"></i>
+                                ディスカバリー・コンパス
+                            </h2>
+                            
+                            <!-- Discovery Compass Sections -->
+                            <div class="discovery-compass-container">
+                                
+                                <!-- Your Archetype Section -->
+                                {% if personality_signature.archetype %}
+                                <div class="compass-section archetype-section">
+                                    <div class="compass-header">
+                                        <div class="compass-icon">
+                                            <i class="fas fa-crown"></i>
+                                        </div>
+                                        <h3 class="compass-title">あなたの称号</h3>
+                                    </div>
+                                    <div class="compass-content">
+                                        <div class="compass-text japanese-text">{{ personality_signature.archetype }}</div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Core Compass Section -->
+                                {% if personality_signature.core_strength %}
+                                <div class="compass-section core-compass-section">
+                                    <div class="compass-header">
+                                        <div class="compass-icon">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <h3 class="compass-title">コア・コンパス</h3>
+                                    </div>
+                                    <div class="compass-content">
+                                        <div class="compass-text japanese-text">{{ personality_signature.core_strength }}</div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Uncharted Territory Section -->
+                                {% if personality_signature.hidden_potential %}
+                                <div class="compass-section uncharted-section">
+                                    <div class="compass-header">
+                                        <div class="compass-icon">
+                                            <i class="fas fa-map"></i>
+                                        </div>
+                                        <h3 class="compass-title">未踏の領域</h3>
+                                    </div>
+                                    <div class="compass-content">
+                                        <div class="compass-text japanese-text">{{ personality_signature.hidden_potential }}</div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Your First Step Section -->
+                                {% if personality_signature.conversation_catalyst %}
+                                <div class="compass-section first-step-section">
+                                    <div class="compass-header">
+                                        <div class="compass-icon">
+                                            <i class="fas fa-handshake"></i>
+                                        </div>
+                                        <h3 class="compass-title">はじめの一歩</h3>
+                                    </div>
+                                    <div class="compass-content">
+                                        <div class="compass-text japanese-text">{{ personality_signature.conversation_catalyst }}</div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                        
+                        <!-- Character Abilities (Core Sparks) -->
+                        <div class="character-abilities">
+                            <h2 class="abilities-title">
+                                <i class="fas fa-magic"></i>
+                                コア能力
+                            </h2>
+                            <div class="abilities-grid">
+                                {% for spark in core_sparks %}
+                                <div class="ability-card">
+                                    <div class="ability-name">{{ spark }}</div>
+                                    <div class="ability-description">このキャラクターの独特な視点とスキルを形作る決定的な興味。</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Character Traits (Interests) -->
+                        <div class="character-traits">
+                            <h2 class="abilities-title">
+                                <i class="fas fa-gem"></i>
+                                キャラクター特性
+                            </h2>
+                            <div class="traits-container">
+                                {% for interest in interests %}
+                                <span class="trait-badge" style="background: linear-gradient(135deg, {{ interest.color }} 0%, {{ interest.color }}cc 100%);">
+                                    {{ interest.category }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

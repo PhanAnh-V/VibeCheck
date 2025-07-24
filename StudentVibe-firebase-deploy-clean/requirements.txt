@@ -1,0 +1,19 @@
+# Flask and web framework
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+gunicorn==22.0.0
+uvicorn==0.29.0
+Werkzeug==3.0.1
+
+
+# Environment and configuration
+python-dotenv==1.0.1
+
+# Firebase and Google Cloud
+firebase-admin==6.5.0
+
+
+# AI and external APIs
+openai==1.25.1
+requests==2.31.0
